@@ -3,22 +3,20 @@ import Data.List.Split
 import Data.List
 import Test.HUnit
 
-getDigitChars :: String -> [DigitChars]
-getDigitChars = map DigitChars . transpose . map (chunksOf 3) . splitOn "\n"
-
 data DigitChars = DigitChars [String] deriving (Show, Eq)  
 
 data Segments = Segments [Bool] deriving (Show, Eq)
 
+getDigitChars :: String -> [DigitChars]
+getDigitChars = map DigitChars . transpose . map (chunksOf 3) . splitOn "\n"
+
 getSegment :: DigitChars -> Segments
 getSegment (DigitChars d) = (Segments . map (/= ' ') . concat) d
-
 
 allSegs = map getSegment . getDigitChars $ "\
 \ _     _  _     _  _  _  _  _ \n\
 \| |  | _| _||_||_ |_   ||_||_|\n\
 \|_|  ||_  _|  | _||_|  ||_| _|\n"
-
 
 segToChar :: Segments -> Maybe Char
 segToChar s = fmap (head . show) (elemIndex s allSegs)
