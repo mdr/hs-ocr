@@ -4,9 +4,7 @@ import Data.List
 import Test.HUnit
 
 getDigitChars :: String -> [DigitChars]
-getDigitChars s = let lines = splitOn "\n" s in 
-  let triplets = map (chunksOf 3) lines in
-  map DigitChars (transpose triplets)
+getDigitChars = map DigitChars . transpose . map (chunksOf 3) . splitOn "\n"
 
 data DigitChars = DigitChars [String] deriving (Show, Eq)  
 
@@ -23,14 +21,16 @@ allSegs = map getSegment . getDigitChars $ "\
 
 
 segToChar :: Segments -> Maybe Char
-segToChar s = fmap head (fmap show (elemIndex s allSegs))
+segToChar s = fmap (head . show) (elemIndex s allSegs)
 
 handleMaybeChar :: Maybe Char -> Char
 handleMaybeChar (Just c) = c
 handleMaybeChar Nothing  = '?'
 
+safeSegToChar = handleMaybeChar . segToChar
+
 parseLine :: String -> [Char]
-parseLine s = (map (handleMaybeChar . segToChar) . map getSegment . getDigitChars) s
+parseLine = map safeSegToChar . map getSegment . getDigitChars
 
 allZeros = "\
 \ _  _  _  _  _  _  _  _  _ \n\
